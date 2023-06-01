@@ -11,14 +11,9 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@master
         
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.8
-        
-      - name: Install Dnsvalidator
+      - name: Install & Run Dnsvalidator
         run: |
           git clone https://github.com/vortexau/dnsvalidator.git
           cd dnsvalidator
@@ -26,14 +21,12 @@ jobs:
           python setup.py install
           cd ..
           rm -rf dnsvalidator
+          dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 20 -o resolvers.txt
         
-      - name: Run DNSValidator
-        run: dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 20 -o resolvers.txt
-
-      - name: Commit and push output to repository
+      - name: Commit & push output to repository
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "balakumarc92584@gmail.com"
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
           git add resolvers.txt
-          git commit -m "Updated resolvers.txt"
-          git push
+          git commit -m "Updated resolvers"
+          git push "https://zy9ard3:${{ secrets.DNSVALIDATOR }}@github.com/zy9ard3/fresh-resolvers.git" HEAD:master --follow-tags

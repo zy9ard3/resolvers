@@ -12,7 +12,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
-        
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+
       - name: Install & Run Dnsvalidator
         run: |
           git clone https://github.com/vortexau/dnsvalidator.git

@@ -1,0 +1,35 @@
+name: DNSValidator
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight
+  workflow_dispatch: {} # Manually trigger the workflow
+
+jobs:
+  dnsvalidator:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+        
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install dnsvalidator
+        
+      - name: Run DNSValidator
+        run: dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 20 -o resolvers.txt
+
+      - name: Commit and push output to repository
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "balakumarc92584@gmail.com"
+          git add resolvers.txt
+          git commit -m "Updated resolvers.txt"
+          git push

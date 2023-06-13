@@ -26,10 +26,11 @@ jobs:
           python setup.py install
           cd ..
           rm -rf dnsvalidator
-          dnsvalidator -tL https://gist.githubusercontent.com/zy9ard3/c9485016fecd077ff210bcf469dc065b/raw/9497183af14b6441ce5c42bb5730bcc6f302d199/resolvers.txt -threads 20 -o resolvers.txt
+          dnsvalidator -tL https://gist.githubusercontent.com/zy9ard3/c9485016fecd077ff210bcf469dc065b/raw/9497183af14b6441ce5c42bb5730bcc6f302d199/resolvers.txt -threads 20 -o resolvers_temp.txt
         
       - name: Commit & push output to repository
         run: |
+          mv resolvers_temp.txt resolvers.txt
           git config --local user.name "GitHub Actions"
           git config --local user.email "actions@github.com"
           git add resolvers.txt

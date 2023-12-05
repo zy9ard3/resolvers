@@ -2,7 +2,7 @@ name: DNSValidator
 
 on:
   schedule:
-    - cron: '0 0 * * 0' # Runs every day at midnight
+    - cron: '0 0 * * 0' # Runs every sunday at 12:00 AM UTC
   workflow_dispatch: {} # Manually trigger the workflow
 
 jobs:

@@ -35,4 +35,4 @@ jobs:
           git config --local user.email "actions@github.com"
           git add resolvers.txt
           git commit -m "Updated resolvers"
-          git push "https://zy9ard3:${{ secrets.DNSVALIDATOR }}@github.com/zy9ard3/fresh-resolvers.git" HEAD:master --follow-tags
+          git push "https://zy9ard3:${{ secrets.DNSVALIDATOR }}@github.com/zy9ard3/resolvers.git" HEAD:master --follow-tags

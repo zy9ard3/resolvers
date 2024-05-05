@@ -2,7 +2,7 @@ name: DNSValidator
 
 on:
   schedule:
-    - cron: '0 0 */3 * *' # Runs once in every 3 days at 12:00 AM UTC
+    - cron: '0 0 * * *' # Runs every day at 12:00 AM UTC
   workflow_dispatch: {} # Manually trigger the workflow
 
 jobs:
@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@master
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v3
         with:
           python-version: 3.8
@@ -26,11 +26,11 @@ jobs:
           python setup.py install
           cd ..
           rm -rf dnsvalidator
-          dnsvalidator -tL https://gist.githubusercontent.com/zy9ard3/c9485016fecd077ff210bcf469dc065b/raw/9497183af14b6441ce5c42bb5730bcc6f302d199/resolvers.txt -threads 20 -o resolvers_temp.txt
+          dnsvalidator -tL https://gist.githubusercontent.com/zy9ard3/c9485016fecd077ff210bcf469dc065b/raw/f8f7fbf35d58e7a35d3ed273faa8b27d1a1b8210/resolvers.txt -threads 30 -o resolvers.txt
         
-      - name: Commit & push output to repository
+      - name: Commit & Push Valid Resolvers to Repository
         run: |
-          mv resolvers_temp.txt resolvers.txt
+          sed -i '/^$/d' resolvers.txt
           git config --local user.name "GitHub Actions"
           git config --local user.email "actions@github.com"
           git add resolvers.txt

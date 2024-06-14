@@ -26,7 +26,7 @@ jobs:
           python setup.py install
           cd ..
           rm -rf dnsvalidator
-          dnsvalidator -tL https://gist.githubusercontent.com/zy9ard3/c9485016fecd077ff210bcf469dc065b/raw/f8f7fbf35d58e7a35d3ed273faa8b27d1a1b8210/resolvers.txt -threads 30 -o resolvers_temp.txt
+          dnsvalidator -tL https://raw.githubusercontent.com/proabiral/Fresh-Resolvers/master/resolvers.txt -threads 30 -o resolvers_temp.txt
         
       - name: Commit & Push Valid Resolvers to Repository
         run: |

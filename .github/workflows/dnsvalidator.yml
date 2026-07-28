@@ -3,37 +3,36 @@ name: DNSValidator
 on:
   schedule:
     - cron: '0 0 * * *' # Runs every day at 12:00 AM UTC
-  workflow_dispatch: {} # Manually trigger the workflow
+  workflow_dispatch: # manual trigger
+
+permissions:
+  contents: write
 
 jobs:
   dnsvalidator:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@master
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.8
+          python-version: "3.11"
 
       - name: Install & Run Dnsvalidator
-        run: |
-          git clone https://github.com/vortexau/dnsvalidator.git
-          cd dnsvalidator
-          python -m pip install -r requirements.txt
-          python setup.py install
-          cd ..
-          rm -rf dnsvalidator
-          dnsvalidator -tL https://raw.githubusercontent.com/proabiral/Fresh-Resolvers/master/resolvers.txt -threads 30 -o resolvers_temp.txt
+        run: python -m pip install git+https://github.com/vortexau/dnsvalidator.git
+        
+      - name: Generate Valid Resolvers
+        run: dnsvalidator -tL https://raw.githubusercontent.com/proabiral/Fresh-Resolvers/master/resolvers.txt -threads 30 -o resolvers.txt
+
+      - name: Clean Empty Lines
+        run: sed -i '/^$/d' resolvers.txt
         
       - name: Commit & Push Valid Resolvers to Repository
         run: |
-          mv resolvers_temp.txt resolvers.txt
-          sed -i '/^$/d' resolvers.txt
-          git config --local user.name "GitHub Actions"
-          git config --local user.email "actions@github.com"
+          git config --local user.name "resolversbot"
+          git config --local user.email "resolvers@bot"
           git add resolvers.txt
-          git commit -m "Updated resolvers"
-          git push "https://zy9ard3:${{ secrets.DNSVALIDATOR }}@github.com/zy9ard3/resolvers.git" HEAD:master --follow-tags
+          git diff --cached --quiet || git commit -m "updated valid resolvers"
+          git push origin main --force
